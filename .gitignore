@@ -1,0 +1,7 @@
+*.o
+*.in
+*.dat
+.deps/
+
+arraylist_test
+day[0-9][0-9]
