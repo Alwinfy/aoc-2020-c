@@ -29,8 +29,8 @@ int main() {
 
 		target = twentytwenty - alist_get(int, action, lpos);
 		head = list.list;
-		head += lpos;
 		tail = head + (list.size - 1);
+		head += lpos;
 		while (*head < *tail) {
 			int value = *head + *tail - target;
 			if (value > 0) {

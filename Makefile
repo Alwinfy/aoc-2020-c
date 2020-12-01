@@ -6,10 +6,10 @@ TARGETS = $(basename $(shell grep -zl 'int\s\+main' $(SOURCES)))
 default: all
 all: $(TARGETS)
 
-CCFLAGS  = -Wall -Wextra -pipe -pedantic -fsanitize=address
+CCFLAGS  = -Wall -Wextra -pipe -pedantic
 CXXFLAGS = $(CCFLAGS) -std=c++17
 CFLAGS   = $(CCFLAGS) -ansi
-LDFLAGS  = -fsanitize=address
+LDFLAGS  =
 
 ifdef FLAGS
 	CCFLAGS += $(FLAGS)
@@ -17,7 +17,8 @@ endif
 
 DEBUG ?= 0
 ifneq ($(DEBUG),0)
-	CCFLAGS += -g -O0 -DDEBUG
+	CCFLAGS += -g -O0 -DDEBUG -fsanitize=address
+	LDFLAGS += -fsanitize=address
 else
 	CCFLAGS += -O2
 endif
