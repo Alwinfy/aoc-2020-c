@@ -9,7 +9,7 @@ int sub(const void *l, const void *r) {
 static int twentytwenty = 2020;
 static int part2 = 1;
 
-int main() {
+int main(void) {
 	alist	list, noop, *action;
 	int	val, count = 0, *head, *tail;
 	size_t	lpos;
