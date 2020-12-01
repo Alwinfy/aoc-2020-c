@@ -8,7 +8,7 @@ all: $(TARGETS)
 
 CCFLAGS  = -Wall -Wextra -pipe -pedantic -fsanitize=address
 CXXFLAGS = $(CCFLAGS) -std=c++17
-CFLAGS   = $(CCFLAGS) -std=c99
+CFLAGS   = $(CCFLAGS) -ansi
 LDFLAGS  = -fsanitize=address
 
 ifdef FLAGS
@@ -49,7 +49,8 @@ $(DEPDIR)/%.d: %.c
 ### Put linker rules here ###
 #############################
 
-day1: arraylist.o
+day01: arraylist.o
+arraylist_test: arraylist.o
 
 
 

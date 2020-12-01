@@ -12,6 +12,7 @@ static int part2 = 1;
 int main() {
 	alist	list, noop, *action;
 	int	val, count = 0, *head, *tail;
+	size_t	lpos;
 
 	alist_init(int, &noop);
 	alist_add_imm(int, &noop, 0);
@@ -23,11 +24,12 @@ int main() {
 
 	qsort(list.list, list.size, list.width, sub);
 	action = part2 ? &list : &noop;
-	for (size_t lpos = 0; lpos < action->size; lpos++) {
+	for (lpos = 0; lpos < action->size; lpos++) {
 		int target;
 
 		target = twentytwenty - alist_get(int, action, lpos);
 		head = list.list;
+		head += lpos;
 		tail = head + (list.size - 1);
 		while (*head < *tail) {
 			int value = *head + *tail - target;
