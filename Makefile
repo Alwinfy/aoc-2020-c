@@ -51,6 +51,7 @@ $(DEPDIR)/%.d: %.c
 #############################
 
 day01: arraylist.o
+day03: arraylist.o
 arraylist_test: arraylist.o
 
 
