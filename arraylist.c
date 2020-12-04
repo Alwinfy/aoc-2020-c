@@ -26,6 +26,9 @@ void *alist_get_typeless(const alist *list, size_t pos) {
 	_ALIST_BOUNDS_CHECK(list, pos);
 	return (char *) list->list + pos * list->width;
 }
+void *alist_back(const alist *list) {
+	return (char *) list->list + list->width * (list->size - 1);
+}
 
 void alist_add(alist *list, const void *data) {
 	if (list->capacity >= list->size) {

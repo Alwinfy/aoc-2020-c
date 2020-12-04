@@ -17,8 +17,8 @@ endif
 
 DEBUG ?= 0
 ifneq ($(DEBUG),0)
-	CCFLAGS += -g -O0 -DDEBUG -fsanitize=address
-	LDFLAGS += -fsanitize=address
+	CCFLAGS += -g -O0 -DDEBUG #-fsanitize=address
+	LDFLAGS += #-fsanitize=address
 else
 	CCFLAGS += -O2
 endif
@@ -52,6 +52,7 @@ $(DEPDIR)/%.d: %.c
 
 day01: arraylist.o
 day03: arraylist.o
+day04: arraylist.o
 arraylist_test: arraylist.o
 
 
