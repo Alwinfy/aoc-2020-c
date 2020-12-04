@@ -5,7 +5,6 @@
 
 #include "arraylist.h"
 
-#define COMMA ,
 #define NOOP
 #define PASSPORT_FIELDS(pport, delim, op) op pport->byr \
 	delim op pport->iyr \
@@ -43,30 +42,6 @@ void passport_init(passport *pport) {
 int p1_validate(const passport *pport) {
 	return PASSPORT_FIELDS(pport, &&, *);
 }
-
-int get_key_type(const char key[4]) {
-	int offset = 0;
-	while (KEYS[offset]) {
-		if (!strcmp(KEYS[offset], key)) {
-			return offset;
-		}
-		offset++;
-	}
-	return -1;
-}
-
-void read_structures(const char *line, passport *dest) {
-	char	key[4], val[16]; /* please don't buffer overrun please don't buffer overrun */
-	int	offset, fail = 0;
-	while (!fail && sscanf(line, "%3s:%15s %n", key, val, &offset) == 2) {
-		int	type;
-		if ((type = get_key_type(key)) < 0) {
-			continue;
-		}
-		strcpy(dest->byr + 16 * type, val);
-		line += offset;
-	}
-}
 int p2_validate(passport *ppt) {
 	unsigned int	value;
 	char		unit[3] = {0};
@@ -95,6 +70,30 @@ int p2_validate(passport *ppt) {
 		return 0;
 	return (!strcmp(unit, "in") && value >= 59 && value <= 76) || 
 	       (!strcmp(unit, "cm") && value >= 150 && value <= 193);
+}
+
+int get_key_type(const char key[4]) {
+	int offset = 0;
+	while (KEYS[offset]) {
+		if (!strcmp(KEYS[offset], key)) {
+			return offset;
+		}
+		offset++;
+	}
+	return -1;
+}
+
+void read_structures(const char *line, passport *dest) {
+	char	key[4], val[16]; /* please don't buffer overrun please don't buffer overrun */
+	int	offset, fail = 0;
+	while (!fail && sscanf(line, "%3s:%15s %n", key, val, &offset) == 2) {
+		int	type;
+		if ((type = get_key_type(key)) < 0) {
+			continue;
+		}
+		strcpy(dest->byr + 16 * type, val);
+		line += offset;
+	}
 }
 
 int main() {
