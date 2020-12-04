@@ -23,30 +23,25 @@ typedef enum __ppt_types {
 	HGT,
 	HCL,
 	ECL,
-	PID,
-	CID
+	PID
 } ppt_type;
 
 const char *KEYS[] = {"byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid", "cid", NULL};
 
 typedef struct __passport {
-	int		byr, iyr, eyr;
-	int		hgt;
-	int		hcl, ecl;
-	unsigned int	pid, cid;
+	char    byr[16], iyr[16], eyr[16];
+	char    hgt[16];
+	char    hcl[16], ecl[16];
+	char	pid[16], cid[16];
 } passport;
 
 void passport_init(passport *pport) {
-	PASSPORT_FIELDS(pport, =, NOOP) = -1;
-	pport->cid = 0; /* for part 1 */
+	PASSPORT_FIELDS(pport, =, *) = '\0';
+	*pport->cid = 48; /* for part 1 */
 }
 
-int passport_validate(const passport *pport) {
-	return PASSPORT_FIELDS(pport, &&, ~);
-}
-void passport_prn(const passport *pport, FILE *out) {
-	fprintf(out, "byr=%d iyr=%d eyr=%d hgt=%dun hcl=#%06x ecl=#%06x pid=%d cid=%d\n",
-		PASSPORT_FIELDS(pport, COMMA, NOOP));
+int p1_validate(const passport *pport) {
+	return PASSPORT_FIELDS(pport, &&, *);
 }
 
 int get_key_type(const char key[4]) {
@@ -60,60 +55,53 @@ int get_key_type(const char key[4]) {
 	return -1;
 }
 
-void parse_structures(const char *line, passport *dest) {
+void read_structures(const char *line, passport *dest) {
 	char	key[4], val[16]; /* please don't buffer overrun please don't buffer overrun */
 	int	offset, fail = 0;
 	while (!fail && sscanf(line, "%3s:%15s %n", key, val, &offset) == 2) {
 		int	type;
 		if ((type = get_key_type(key)) < 0) {
-			fail = 1;
 			continue;
 		}
-		switch (type) {
-		case BYR:
-			sscanf(val, "%d", &dest->byr) == 1 || (fail = 1);
-			break;
-		case IYR:
-			sscanf(val, "%d", &dest->iyr) == 1 || (fail = 1);
-			break;
-		case EYR:
-			sscanf(val, "%d", &dest->eyr) == 1 || (fail = 1);
-			break;
-		case HGT: {
-			char *penu = val + strlen(val) - 2;
-			if (*penu >= 'a' && *penu <= 'z') {
-				*penu = '\0';
-			}
-			sscanf(val, "%d", &dest->hgt) == 1 || (fail = 1);
-			dest->hgt = 1;
-			break;
-		}
-		case HCL:
-			/* sscanf(val, "#%x", &dest->hcl) == 1 || (fail = 1); */
-			dest->hcl = 1;
-			break;
-		case ECL:
-			/* strncpy(dest->ecl, val, 3); */
-			dest->ecl = 1;
-			break;
-		case PID:
-			sscanf(val, "%u", &dest->pid) == 1 || sscanf(val, "#%x", &dest->pid) == 1 || (fail = 1);
-			break;
-		case CID:
-			sscanf(val, "%u", &dest->cid) == 1 || (fail = 1);
-			break;
-		default:
-			fail = 1;
-		}
+		strcpy(dest->byr + 16 * type, val);
 		line += offset;
 	}
+}
+int p2_validate(passport *ppt) {
+	unsigned int	value;
+	char		unit[3] = {0};
+	int		count = 0;
+
+	if (sscanf(ppt->byr, "%u%n", &value, &count) != 1 || ppt->byr[count] || value < 1920 || value > 2002)
+		return 0;
+	if (sscanf(ppt->iyr, "%u%n", &value, &count) != 1 || ppt->iyr[count] || value < 2010 || value > 2020)
+		return 0;
+	if (sscanf(ppt->eyr, "%u%n", &value, &count) != 1 || ppt->eyr[count] || value < 2020 || value > 2030)
+		return 0;
+	if (sscanf(ppt->hcl, "#%6x%n", &value, &count) != 1 || count != 7 || ppt->hcl[count])
+		return 0;
+	if (strlen(ppt->ecl) != 3 || !strstr("amb blu brn gry grn hzl oth", ppt->ecl))
+		return 0;
+	if (sscanf(ppt->pid, "%9u%n", &value, &count) != 1 || count != 9 || ppt->pid[count])
+		return 0;
+
+	count = strlen(ppt->hgt);
+	if (count < 2)
+		return 0;
+	unit[0] = ppt->hgt[count - 2];
+	unit[1] = ppt->hgt[count - 1];
+	ppt->hgt[count - 2] = 0;
+	if (sscanf(ppt->hgt, "%u%n", &value, &count) != 1 || ppt->hgt[count])
+		return 0;
+	return (!strcmp(unit, "in") && value >= 59 && value <= 76) || 
+	       (!strcmp(unit, "cm") && value >= 150 && value <= 193);
 }
 
 int main() {
 	alist		passports;
 	passport	copy, *head;
 	char		*line = NULL;
-	size_t		count = 0, n = 0;
+	size_t		count1 = 0, count2 = 0, n = 0;
 
 	passport_init(&copy);
 	alist_init(passport, &passports);
@@ -126,16 +114,17 @@ int main() {
 			head = alist_back(&passports);
 			continue;
 		}
-		parse_structures(line, head);
+		read_structures(line, head);
 	}
 	free(line);
 
 	for (n = 0; n < passports.size; n++) {
 		/* passport_prn(&alist_get(passport, &passports, n), stderr); */
-		count += passport_validate(&alist_get(passport, &passports, n));
+		count1 += p1_validate(&alist_get(passport, &passports, n));
+		count2 += p2_validate(&alist_get(passport, &passports, n));
 	}
 
-	printf("%lu\n", count);
+	printf("%lu %lu\n", count1, count2);
 
 	alist_free(&passports);
 	return 0;
