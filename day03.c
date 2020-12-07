@@ -25,8 +25,8 @@ int main() {
 		if (n <= 1) {
 			continue;
 		}
-		line = realloc(line, size + 1);
 		width = size - 1;
+		line = realloc(line, width);
 		alist_add(&grid, &line);
 
 		line = NULL;
