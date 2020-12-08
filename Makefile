@@ -55,6 +55,7 @@ day03: arraylist.o
 day04: arraylist.o
 day05: arraylist.o
 day07: arraylist.o
+day08: arraylist.o
 arraylist_test: arraylist.o
 
 
