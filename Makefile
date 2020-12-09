@@ -1,6 +1,6 @@
-SOURCES = $(shell find -name '*.cpp' -or -name '*.c')
+SOURCES = $(shell find . -name '*.cpp' -or -name '*.c')
 ALL     = $(basename $(SOURCES))
-TARGETS = $(basename $(shell grep -zl 'int\s\+main' $(SOURCES)))
+TARGETS = $(basename $(shell grep -l 'int\s\+main' $(SOURCES)))
 -include 
 
 default: all
