@@ -16,13 +16,16 @@ ifdef FLAGS
 endif
 
 DEBUG ?= 0
+ASAN  ?= 0
 ifneq ($(DEBUG),0)
-	CCFLAGS += -g -O0 -DDEBUG #-fsanitize=address
-	LDFLAGS += #-fsanitize=address
+	CCFLAGS += -g -O0 -DDEBUG
 else
 	CCFLAGS += -O2
 endif
-
+ifneq ($(ASAN),0)
+	CCFLAGS += -fsanitize=address
+	LDFLAGS += -fsanitize=address
+endif
 DEPDIR   = .deps
 DEPFLAGS = $(CCFLAGS) -MM -MG
 MKDIR = mkdir -p 
