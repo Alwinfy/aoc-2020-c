@@ -6,7 +6,7 @@
 
 #define _ALIST_BOUNDS_CHECK(list, pos) assert((pos) < (list)->size)
 
-void alist_init_typeless(alist *list, size_t width, size_t capacity) {
+void alist_init_ptr(alist *list, size_t width, size_t capacity) {
 	list->size = list->capacity = 0;
 	list->list = NULL;
 	list->width = width;
@@ -22,7 +22,7 @@ void alist_set(alist *list, size_t pos, const void *data) {
 	_ALIST_BOUNDS_CHECK(list, pos);
 	memcpy((char *) list->list + pos * list->width, data, list->width);
 }
-void *alist_get_typeless(const alist *list, size_t pos) {
+void *alist_get_ptr(const alist *list, size_t pos) {
 	_ALIST_BOUNDS_CHECK(list, pos);
 	return (char *) list->list + pos * list->width;
 }

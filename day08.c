@@ -101,7 +101,7 @@ int main() {
 	printf("%d\n", state.acc);
 
 	for (i = 0; i < program.size; i++) {
-		instruction *ins = alist_get_typeless(&program, i);
+		instruction *ins = alist_get_ptr(&program, i);
 		if (ins->action == ins_acc) continue;
 		ins->action = ins->action == ins_nop ? ins_jmp : ins_nop;
 		run(&program, &state);

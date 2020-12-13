@@ -61,7 +61,7 @@ int p2(bagspec *bag) {
 	int count = 0;
 	size_t i = 0;
 	for (i = 0; i < bag->child.size; i++) {
-		bagcount *child = alist_get_typeless(&bag->child, i);
+		bagcount *child = alist_get_ptr(&bag->child, i);
 		count += child->count * p2(child->other);
 	}
 	return 1 + count;
