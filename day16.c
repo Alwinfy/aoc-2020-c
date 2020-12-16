@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "arraylist.h"
-
 #define NUM_FIELDS 20
 
 typedef struct __field {
@@ -52,7 +50,6 @@ int readticket(ticket *out) {
 int main() {
 	field	fields[NUM_FIELDS];
 	ticket	self, buf;
-	alist	tickets;
 	size_t	i, j, cycle, error = 0;
 	long	result;
 	int	masks[NUM_FIELDS]; /* tfield -> ordered field */
@@ -67,7 +64,6 @@ int main() {
 		masks[i] = getmask(fields, self.data[i]);
 	}
 	i = scanf(" nearby tickets: ");
-	alist_init(ticket, &tickets);
 	while (readticket(&buf)) {
 		int bad = 0;
 		for (i = 0; i < NUM_FIELDS; i++) {
@@ -80,7 +76,6 @@ int main() {
 			for (i = 0; i < NUM_FIELDS; i++) {
 				masks[i] &= getmask(fields, buf.data[i]);
 			}
-			alist_add(&tickets, &buf);
 		}
 	}
 
@@ -103,6 +98,5 @@ int main() {
 	}
 
 	printf("%lu %lu\n", error, result);
-	alist_free(&tickets);
 	return 0;
 }
