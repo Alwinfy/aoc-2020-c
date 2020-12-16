@@ -70,12 +70,10 @@ int main() {
 		next = historysay(&history, next, ++time);
 	}
 	while (time < 2019) {
-		/*printf("%ld\n", next);*/
 		next = historysay(&history, next, ++time);
 	}
 	printf("%ld\n", next);
 	while (time < 29999999) {
-		/*printf("%ld\n", next);*/
 		next = historysay(&history, next, ++time);
 	}
 	printf("%ld\n", next);
