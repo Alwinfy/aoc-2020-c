@@ -58,7 +58,7 @@ void run(alist *program, boot_state *state) {
 		alist_get(instruction, program, i).visits = 0;
 	}
 	front = program->list;
-	back = alist_back(program);
+	back = alist_back_ptr(program);
 
 	state->pc = front;
 	state->acc = 0;

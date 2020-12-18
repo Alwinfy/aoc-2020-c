@@ -50,7 +50,7 @@ mement *findalloc(shittyhashmap *map, long key) {
 	}
 	create.key = key;
 	alist_add(list, &create);
-	return alist_back(list);
+	return alist_back_ptr(list);
 }
 
 size_t genfloatset(long mask, long *floatset, int offset) {

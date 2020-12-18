@@ -106,11 +106,11 @@ int main() {
 	alist_init(passport, &passports);
 
 	alist_add(&passports, &copy);
-	head = alist_back(&passports);
+	head = alist_back_ptr(&passports);
 	while (~getline(&line, &n, stdin)) {
 		if (*line == '\n') {
 			alist_add(&passports, &copy);
-			head = alist_back(&passports);
+			head = alist_back_ptr(&passports);
 			continue;
 		}
 		read_structures(line, head);

@@ -17,8 +17,9 @@ void alist_free(alist *list);
 void alist_set(alist *list, size_t pos, const void *data);
 #define alist_set_imm(type, list, pos, val) do { type _data = (val); alist_set((list), (pos), &_data); } while (0)
 void *alist_get_ptr(const alist *list, size_t pos);
-void *alist_back(const alist *list);
 #define alist_get(type, list, pos) (*(type *) alist_get_ptr((list), (pos)))
+void *alist_back_ptr(const alist *list);
+#define alist_back(type, list) (*(type *) alist_back_ptr(list))
 
 void alist_resize(alist *list, size_t target);
 void alist_add(alist *list, const void *data);

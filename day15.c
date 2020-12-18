@@ -49,7 +49,7 @@ mement *findalloc(shittyhashmap *map, long key, long dvalue) {
 	create.key = key;
 	create.value = dvalue;
 	alist_add(list, &create);
-	return alist_back(list);
+	return alist_back_ptr(list);
 }
 
 long historysay(shittyhashmap *history, long next, long time) {
