@@ -13,7 +13,7 @@ typedef struct __rule {
 } rule;
 
 const char *test(const char *pattern, rule *rules, int num) {
-	int i, j, c = 0;
+	int i, j;
 	rule *rule = rules + num;
 	if (rule->literal) {
 		return rule->literal == *pattern ? pattern + 1 : NULL;
@@ -28,12 +28,23 @@ const char *test(const char *pattern, rule *rules, int num) {
 	}
 	return NULL;
 }
-
-rule p2_8 = {2, {2, 1}, 0, {{42, 8, 0}, {42, 0, 0}}};
-rule p2_11 = {2, {3, 2}, 0, {{42, 11, 31}, {42, 31, 0}}};
+int test2(const char *pattern, rule *rules) {
+	int i, j;
+	pattern = test(pattern, rules, 42);
+	for (i = 0; pattern; i++, pattern = test(pattern, rules, 42)) {
+		const char *rest = test(pattern, rules, 31);
+		for (j = 0; rest && j < i; j++, rest = test(rest, rules, 31)) {
+			if (*rest == '\n') {
+				return 1;
+			}
+		}
+				
+	}
+	return 0;
+}
 
 int main() {
-	rule rules[MAX_RULES], rules2[MAX_RULES];
+	rule rules[MAX_RULES];
 	char *line = NULL;
 	size_t n = 0, count1 = 0, count2 = 0;
 	while (~getline(&line, &n, stdin) && *line != '\n') {
@@ -58,17 +69,12 @@ int main() {
 		}
 		r->alts++;
 	}
-	memcpy(rules2, rules, MAX_RULES * sizeof(rule));
-	rules2[8] = p2_8;
-	rules2[11] = p2_11;
 	while (~getline(&line, &n, stdin)) {
 		const char *res1 = test(line, rules, 0);
-		const char *res2 = test(line, rules2, 0);
 		if (res1 && *res1 == '\n') {
 			count1++;
 		}
-		printf("rest=%s", res2 ? res2 : "NULL\n");
-		if (res2) {
+		if (test2(line, rules)) {
 			count2++;
 		}
 	}
